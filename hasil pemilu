@@ -1,6 +1,5 @@
 # import libraries
 from bs4 import BeautifulSoup
-# import urllib.request
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import csv
@@ -39,9 +38,8 @@ browser.quit()
 results = soup.find('table',{'class':'table'})
 rows = results.find_all('tr',{'class':'row'})
 array = []
-#jokowi = []
-#prabowo = []
-total2019 = []
+jokowi = []
+prabowo = []
 
 # print(rows)
 for r in rows:
@@ -52,17 +50,22 @@ for r in rows:
         continue
 # write columns to variables
     wilayah = data[1].find('a').getText()
-    tiga = data[5].find('span', attrs={'class': 'tsah'}).getText()
+    satu = data[2].find('span', attrs={'class':'abs'}).getText()
+    dua = data[3].find('span', attrs={'class': 'abs'}).getText()
     # Remove decimal point
-    tiga = tiga.replace('.', '')
+    satu = satu.replace('.','')
+    dua = dua.replace('.','')
     # Cast Data Type Integer
-    tiga = int(tiga)
+    satu = int(satu)
+    dua = int(dua)
     array.append(wilayah)
-    total2019.append(tiga)
+    jokowi.append(satu)
+    prabowo.append(dua)
 
 # Convert to numpy
 np_array = np.array(array)
-np_total = np.array(total2019)
+np_jokowi= np.array(jokowi)
+np_prabowo= np.array(prabowo)
 
 # Naming label
 plt.xlabel('provinsi')
@@ -70,10 +73,11 @@ plt.ylabel('perolehan suara')
 
 # styling x,y value
 plt.xticks(rotation=90,ha='center')
-plt.yticks(np.arange(np_total.min(),np_total.max(),4000000))
+plt.yticks(np.arange(np_jokowi.min(),np_jokowi.max(),4000000))
 
 # plot data
-plt.plot(np_array,np_total,color='pink',label='Total Suara Tidak Sah 2019',linestyle='--', marker='o')
+plt.plot(np_array,np_prabowo,color='red',label='Prabowo 2019',linestyle='--', marker='o')
+plt.plot(np_array,np_jokowi,color='green',label='Jokowi 2019',linestyle='--', marker='o')
 plt.legend(loc='upper right')
 plt.yscale('linear')
 plt.show()
